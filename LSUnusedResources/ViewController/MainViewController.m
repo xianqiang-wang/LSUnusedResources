@@ -405,13 +405,15 @@ static NSString * const kResultIdentifyFilePath    = @"FilePath";
     
     if (self.isFileDone && self.isStringDone) {
         NSArray *resNames = [[[ResourceFileSearcher sharedObject].resNameInfoDict allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-        for (NSString *name in resNames) {
+        for (NSString *fileName in resNames) {
+            ResourceFileInfo *fileInfo = [[ResourceFileSearcher sharedObject].resNameInfoDict objectForKey:fileName];
+            NSString *name = fileInfo.name;
             if (![[ResourceStringSearcher sharedObject] containsResourceName:name]) {
                 if (!self.ignoreSimilarCheckbox.state
                     || ![[ResourceStringSearcher sharedObject] containsSimilarResourceName:name]) {
                     //TODO: if imageset name is A but contains png with name B, and using as B, should ignore A.imageset
                     
-                    ResourceFileInfo *resInfo = [ResourceFileSearcher sharedObject].resNameInfoDict[name];
+                    ResourceFileInfo *resInfo = [ResourceFileSearcher sharedObject].resNameInfoDict[fileName];
                     if (!resInfo.isDir
                         || ![self usingResWithDiffrentDirName:resInfo]) {
                         [self.unusedResults addObject:resInfo];
